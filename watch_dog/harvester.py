@@ -6,13 +6,16 @@ class Harvester(object):
         self.path = path
         self.queue = queue
         self.ignore_older = ignore_older
-
-    def fetch_file(self, cur_time=None):
+    
+    @classmethod
+    def fetch_file(cls, path, ignore_older, cur_time=None):
         if cur_time is None:
             cur_time = int(time.time())
-        file_list = glob.glob(self.path)
+        queue = []
+        file_list = glob.glob(path)
         for file_item in file_list:
             fstat = os.stat(file_item)
-            if (cur_time - fstat.st_mtime) < self.ignore_older:
-                self.queue.append(file_item)
+            if (cur_time - fstat.st_mtime) < ignore_older:
+               queue.append(file_item)
+        return queue
 
